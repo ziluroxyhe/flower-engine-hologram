@@ -153,7 +153,7 @@ export default function ParticlesHologram({
   url,
   onLoaded,
   onTransitionComplete,
-  particleCount = 50_000,
+  particleCount = 150_000,
   autoRotateSpeed = 0.8,
   color = "#8aa0b8",
   floatAmp = 0.01,
@@ -243,6 +243,7 @@ export default function ParticlesHologram({
   entranceMorphDur = 0.7,
   entranceReformDur = 0.35,
   replayTrigger = 0,
+  screenshotTrigger = 0,
 }: ParticlesHologramProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
@@ -277,6 +278,7 @@ export default function ParticlesHologram({
   const bgColorCenterRef = useRef(bgColorCenter);
   const bgColorMidRef = useRef(bgColorMid);
   const bgColorEdgeRef = useRef(bgColorEdge);
+  const rendererRef = useRef<WebGPURenderer | null>(null);
 
   const redrawBg = () => {
     const ctx = bgCtxRef.current;
@@ -366,6 +368,7 @@ export default function ParticlesHologram({
       renderer.setSize(container.clientWidth, container.clientHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       container.appendChild(renderer.domElement);
+      rendererRef.current = renderer;
 
       let postProcessing: PostProcessing | null = null;
 
@@ -1184,6 +1187,7 @@ export default function ParticlesHologram({
         renderer.dispose();
         renderer.domElement?.remove();
       }
+      rendererRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [particleCount]);
@@ -1364,6 +1368,19 @@ export default function ParticlesHologram({
     transitionStateRef.current = "morphing";
     transitionTimeRef.current = 0;
   }, [replayTrigger]);
+
+  // ── Screenshot ───────────────────────────────────────────────────────────────
+  const isFirstScreenshotRef = useRef(true);
+  useEffect(() => {
+    if (isFirstScreenshotRef.current) { isFirstScreenshotRef.current = false; return; }
+    const canvas = rendererRef.current?.domElement;
+    if (!canvas) return;
+    const date = new Date().toISOString().slice(0, 10);
+    const link = document.createElement("a");
+    link.download = `flower-engine-${date}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }, [screenshotTrigger]);
 
   // ── Cylinder geometry rebuild ─────────────────────────────────────────────────
   useEffect(() => {

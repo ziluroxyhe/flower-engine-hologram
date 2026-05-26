@@ -246,4 +246,6 @@ export interface ParticlesHologramProps {
   entranceReformDur?: number;
   /** Increment to re-trigger the entrance animation */
   replayTrigger?: number;
+  /** Increment to trigger a PNG screenshot download */
+  screenshotTrigger?: number;
 }

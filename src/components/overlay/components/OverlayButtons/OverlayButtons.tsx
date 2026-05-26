@@ -15,6 +15,7 @@ interface OverlayButtonsProps {
   onClearGlb: () => void;
   activePreset: PresetId;
   onTogglePreset: () => void;
+  onScreenshot: () => void;
 }
 
 export default function OverlayButtons({
@@ -27,6 +28,7 @@ export default function OverlayButtons({
   onClearGlb,
   activePreset,
   onTogglePreset,
+  onScreenshot,
 }: OverlayButtonsProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -102,6 +104,30 @@ export default function OverlayButtons({
           <circle cx="5" cy="8" r="1.5" fill="currentColor" />
           <line x1="2" y1="12" x2="14" y2="12" />
           <circle cx="9" cy="12" r="1.5" fill="currentColor" />
+        </svg>
+      </button>
+
+      {/* Separator */}
+      <div className={styles.separator} />
+
+      {/* Screenshot */}
+      <button
+        className={styles.btn}
+        onClick={onScreenshot}
+        title="Save screenshot"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M6 2H4a1 1 0 0 0-1 1v1M10 2h2a1 1 0 0 1 1 1v1M2 10v2a1 1 0 0 0 1 1h1M14 10v2a1 1 0 0 1-1 1h-1" />
+          <circle cx="8" cy="8" r="2.5" />
         </svg>
       </button>
     </div>

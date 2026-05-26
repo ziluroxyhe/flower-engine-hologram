@@ -12,7 +12,7 @@ export function useHologramControls(onReplay: () => void) {
     Geometry: folder(
       {
         particleCount: {
-          value: 60000,
+          value: 150000,
           min: 1000,
           max: 150000,
           step: 1000,

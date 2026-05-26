@@ -53,7 +53,7 @@ export default function OverlayHeader({ visible = true }: OverlayHeaderProps) {
           margin: 0,
         }}
       >
-        HOLOGRAM PARTICLES VFX
+        FLOWER ENGINE
       </h1>
 
       {/* Subtitle */}
@@ -97,6 +97,8 @@ export default function OverlayHeader({ visible = true }: OverlayHeaderProps) {
         </a>
         <br />
         REPLICA DEVELOPED BY CORTIZ
+        <br />
+        ORCHID VERSION BY ZILUROXYHE
       </div>
     </div>
   );

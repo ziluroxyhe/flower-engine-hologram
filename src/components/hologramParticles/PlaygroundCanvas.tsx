@@ -11,7 +11,7 @@ import { useHologramControls } from "./utils/useHologramControls";
 import { PRESETS, type PresetId } from "./utils/presets";
 
 const MODELS: ModelOption[] = [
-  { id: "bd1", label: "BD-1", url: "/glb/bd1.glb" },
+  { id: "orchid", label: "Orchid", url: "/orchid_master_candidate_v001.glb" },
   { id: "bb8", label: "BB-8", url: "/glb/bb8.glb" },
 ];
 
@@ -21,6 +21,8 @@ export default function PlaygroundCanvas() {
   const [activeModelIndex, setActiveModelIndex] = useState(0);
   const [headerVisible, setHeaderVisible] = useState(false);
   const [replayTrigger, setReplayTrigger] = useState(0);
+  const [screenshotTrigger, setScreenshotTrigger] = useState(0);
+  const handleScreenshot = useCallback(() => setScreenshotTrigger((t) => t + 1), []);
   const [activePreset, setActivePreset] = useState<PresetId>("light");
   const glbUrlRef = useRef<string | null>(null);
 
@@ -59,6 +61,7 @@ export default function PlaygroundCanvas() {
           preloadUrls={MODELS.map((m) => m.url)}
           onTransitionComplete={() => setHeaderVisible(true)}
           replayTrigger={replayTrigger}
+          screenshotTrigger={screenshotTrigger}
           {...leva}
           {...PRESETS[activePreset]}
         />
@@ -76,6 +79,7 @@ export default function PlaygroundCanvas() {
         onTogglePreset={() =>
           setActivePreset((p) => (p === "light" ? "dark" : "light"))
         }
+        onScreenshot={handleScreenshot}
       />
       <ModelSelector
         models={MODELS}
