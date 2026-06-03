@@ -971,8 +971,45 @@ export default function ParticlesHologram({
         mouseMoving = false;
       };
 
+      // ── Touch interaction ─────────────────────────────────────────────────────
+      const updatePointerFromCoords = (clientX: number, clientY: number) => {
+        const rect = container.getBoundingClientRect();
+        mouseNDC.set(
+          ((clientX - rect.left) / rect.width) * 2 - 1,
+          -((clientY - rect.top) / rect.height) * 2 + 1,
+        );
+        raycaster.setFromCamera(mouseNDC, camera);
+        if (raycaster.ray.intersectPlane(mousePlane, mouseHit)) {
+          const localPos = mouseHit
+            .clone()
+            .sub(posGroup.position)
+            .applyQuaternion(rotGroup.quaternion.clone().invert());
+          targetMousePos.copy(localPos);
+          if (!mouseEverMoved) {
+            smoothMousePos.copy(localPos);
+            prevMousePos.copy(localPos);
+            mouseEverMoved = true;
+          }
+        }
+        mouseMoving = true;
+        moveTimer = 0;
+      };
+
+      const onTouchStart = (e: TouchEvent) => {
+        e.preventDefault();
+        if (e.touches.length > 0) updatePointerFromCoords(e.touches[0].clientX, e.touches[0].clientY);
+      };
+      const onTouchMove = (e: TouchEvent) => {
+        e.preventDefault();
+        if (e.touches.length > 0) updatePointerFromCoords(e.touches[0].clientX, e.touches[0].clientY);
+      };
+      const onTouchEnd = () => { mouseMoving = false; };
+
       container.addEventListener("mousemove", onMouseMove);
       container.addEventListener("mouseleave", onMouseLeave);
+      container.addEventListener("touchstart", onTouchStart, { passive: false });
+      container.addEventListener("touchmove", onTouchMove, { passive: false });
+      container.addEventListener("touchend", onTouchEnd);
 
       const animate = () => {
         if (disposed) return;
@@ -1146,6 +1183,9 @@ export default function ParticlesHologram({
         window.removeEventListener("resize", onResize);
         container.removeEventListener("mousemove", onMouseMove);
         container.removeEventListener("mouseleave", onMouseLeave);
+        container.removeEventListener("touchstart", onTouchStart);
+        container.removeEventListener("touchmove", onTouchMove);
+        container.removeEventListener("touchend", onTouchEnd);
         sphereGeo.dispose();
         material.dispose();
         cylGeo.dispose();
